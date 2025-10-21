@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/consertos")
@@ -44,9 +45,10 @@ public class ConsertoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
-        return repository.findById(id)
-                .map(c -> ResponseEntity.ok(new DadosDetalhamentoConserto(c)))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        Optional<Conserto> conserto = repository.findById(id)
+                .filter(Conserto::getAtivo);
+        if (conserto.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(new DadosDetalhamentoConserto(conserto.get()));
     }
 
     @PutMapping
