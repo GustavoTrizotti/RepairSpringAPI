@@ -5,17 +5,23 @@ import com.prw3.conserto.dto.DadosCadastroConserto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Table(name = "consertos")
 @Entity(name = "Conserto")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Conserto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true, updatable = false)
+    @EqualsAndHashCode.Include
+    private final String uuid = UUID.randomUUID().toString();
 
     private String dataEntrada;
     private String dataSaida;
